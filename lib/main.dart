@@ -15,13 +15,15 @@ Future<void> main() async {
       options: DefaultFirebaseOptions.currentPlatform,
     );
     firebaseReady = true;
-  } catch (e) {
-    debugPrint('Firebase init failed — running in local mode: $e');
+  } catch (_) {
+    // Firebase unavailable — app still runs on local mock data.
   }
 
   runApp(
     ProviderScope(
-      overrides: [firebaseReadyProvider.overrideWithValue(firebaseReady)],
+      overrides: [
+        firebaseReadyProvider.overrideWithValue(firebaseReady),
+      ],
       child: const FlutterGoApp(),
     ),
   );
