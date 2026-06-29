@@ -4,9 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/user_repository.dart';
 import 'firebase_status.dart';
 
-final currentUserProvider = StreamProvider<User?>(
-  (ref) => FirebaseAuth.instance.authStateChanges(),
-);
+final currentUserProvider = StreamProvider<User?>((ref) {
+  if (!ref.watch(firebaseReadyProvider)) {
+    return Stream<User?>.value(null);
+  }
+  return FirebaseAuth.instance.authStateChanges();
+});
 
 final userProfileProvider =
     StreamProvider.autoDispose<Map<String, dynamic>?>((ref) {

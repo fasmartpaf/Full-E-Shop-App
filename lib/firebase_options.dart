@@ -32,41 +32,37 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDummyKeyForWebPlatform',
-    appId: '1:123456789:web:abcdef1234567890',
-    messagingSenderId: '123456789',
-    projectId: 'testing-app-project',
-    authDomain: 'testing-app-project.firebaseapp.com',
-    databaseURL: 'https://testing-app-project.firebaseio.com',
-    storageBucket: 'testing-app-project.appspot.com',
+    apiKey: 'AIzaSyCAtIgtEWg615FcvP4VY8tpvCXfUpQSCU8',
+    appId: '1:676626617385:web:86558d9a7ce2fbb02e7838',
+    messagingSenderId: '676626617385',
+    projectId: 'ara-store-32144',
+    authDomain: 'ara-store-32144.firebaseapp.com',
+    storageBucket: 'ara-store-32144.firebasestorage.app',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDummyKeyForAndroid',
-    appId: '1:123456789:android:abcdef1234567890',
-    messagingSenderId: '123456789',
-    projectId: 'testing-app-project',
-    databaseURL: 'https://testing-app-project.firebaseio.com',
-    storageBucket: 'testing-app-project.appspot.com',
+    apiKey: 'AIzaSyD06b1R_2AyoZynwm_mDo1dftw8lbTi0E0',
+    appId: '1:676626617385:android:ad03df0c6dc006c12e7838',
+    messagingSenderId: '676626617385',
+    projectId: 'ara-store-32144',
+    storageBucket: 'ara-store-32144.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDummyKeyForIOS',
-    appId: '1:123456789:ios:abcdef1234567890',
-    messagingSenderId: '123456789',
-    projectId: 'testing-app-project',
-    databaseURL: 'https://testing-app-project.firebaseio.com',
-    storageBucket: 'testing-app-project.appspot.com',
-    iosBundleId: 'com.open-design.testing-app-brief',
+    apiKey: 'AIzaSyCAtIgtEWg615FcvP4VY8tpvCXfUpQSCU8',
+    appId: '1:676626617385:ios:86558d9a7ce2fbb02e7838',
+    messagingSenderId: '676626617385',
+    projectId: 'ara-store-32144',
+    storageBucket: 'ara-store-32144.firebasestorage.app',
+    iosBundleId: 'com.opendesign.testingAppBrief',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDummyKeyForMacOS',
-    appId: '1:123456789:macos:abcdef1234567890',
-    messagingSenderId: '123456789',
-    projectId: 'testing-app-project',
-    databaseURL: 'https://testing-app-project.firebaseio.com',
-    storageBucket: 'testing-app-project.appspot.com',
-    iosBundleId: 'com.open-design.testing-app-brief',
+    apiKey: 'AIzaSyCAtIgtEWg615FcvP4VY8tpvCXfUpQSCU8',
+    appId: '1:676626617385:ios:86558d9a7ce2fbb02e7838',
+    messagingSenderId: '676626617385',
+    projectId: 'ara-store-32144',
+    storageBucket: 'ara-store-32144.firebasestorage.app',
+    iosBundleId: 'com.opendesign.testingAppBrief',
   );
 }
