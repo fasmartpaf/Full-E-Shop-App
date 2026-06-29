@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../state/auth_provider.dart';
+import '../../state/firebase_status.dart';
 import '../../theme/app_theme.dart';
 
 /// Combined sign-in / create-account screen backed by Firebase Auth.
@@ -33,6 +34,17 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
 
   Future<void> _submit() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
+    if (!ref.read(firebaseReadyProvider)) {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          const SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: Text('Firebase is not connected. Restart the app and try again.'),
+          ),
+        );
+      return;
+    }
     setState(() => _busy = true);
     final auth = ref.read(authControllerProvider);
     try {

@@ -33,7 +33,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyCAtIgtEWg615FcvP4VY8tpvCXfUpQSCU8',
-    appId: '1:676626617385:web:86558d9a7ce2fbb02e7838',
+    appId: '1:676626617385:web:6e85f38928505f042e7838',
     messagingSenderId: '676626617385',
     projectId: 'ara-store-32144',
     authDomain: 'ara-store-32144.firebaseapp.com',
