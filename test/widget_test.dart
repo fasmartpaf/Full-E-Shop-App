@@ -1,11 +1,15 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:testing_app_brief/theme/app_theme.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'package:testing_app_brief/app.dart';
 
 void main() {
-  test('App theme is configured for Material 3', () {
-    final theme = AppTheme.light();
+  testWidgets('App starts with home screen', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      const ProviderScope(child: FlutterGoApp()),
+    );
 
-    expect(theme.useMaterial3, isTrue);
-    expect(theme.colorScheme.primary, AppColors.brand);
+    await tester.pumpAndSettle();
+    expect(find.text('Home'), findsWidgets);
   });
 }

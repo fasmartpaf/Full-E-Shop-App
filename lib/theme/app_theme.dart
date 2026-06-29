@@ -36,7 +36,7 @@ class AppTheme {
   static const double radius = 18;
 
   static ThemeData light() {
-    const scheme = ColorScheme.light(
+    final scheme = const ColorScheme.light(
       primary: AppColors.brand,
       onPrimary: Colors.white,
       primaryContainer: Color(0xFFE5E2FF),
