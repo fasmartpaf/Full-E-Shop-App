@@ -1,10 +1,8 @@
-    final user = ref.watch(currentUserProvider);
-    final signedIn = user != null;
-    final profile = ref.watch(userProfileProvider).asData?.value;
-    final profileName = profile?['name'] as String?;
-    final name = (profileName != null && profileName.isNotEmpty)
-        ? profileName
-        : (user?.displayName?.isNotEmpty ?? false)
-            ? user!.displayName!
-            : (signedIn ? 'Ara member' : 'Guest');
-    final email = (profile?['email'] as String?) ?? user?.email ?? 'Not signed in';
+          _tile(context, Icons.location_on_outlined, 'Addresses',
+              () => context.push('/addresses')),
+          _tile(context, Icons.credit_card_outlined, 'Payment methods',
+              () => context.push('/payment-methods')),
+          _tile(context, Icons.notifications_none_rounded, 'Notifications',
+              () => context.push('/notifications')),
+          _tile(context, Icons.help_outline_rounded, 'Help & support',
+              () => context.push('/help')),
