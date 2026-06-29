@@ -8,10 +8,6 @@ enum SortOption { featured, priceLow, priceHigh, rating }
 
 final categoriesProvider = Provider<List<Category>>((_) => MockCatalog.categories);
 
-/// Catalog data from Firestore or mock.
-final catalogProvider = Provider<List<Product>>(
-    (ref) => MockCatalog.products);
-
 /// All products from the Firestore-backed catalog (mock fallback).
 final allProductsProvider =
     Provider<List<Product>>((ref) => ref.watch(catalogProvider));

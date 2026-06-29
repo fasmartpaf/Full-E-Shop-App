@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../state/cart_provider.dart';
+import '../../state/orders_provider.dart';
 
 class CheckoutScreen extends ConsumerStatefulWidget {
   const CheckoutScreen({super.key});
@@ -15,6 +16,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   late TextEditingController _nameCtrl;
   late TextEditingController _addressCtrl;
   late TextEditingController _cityCtrl;
+  bool _placing = false;
 
   @override
   void initState() {
@@ -81,8 +83,14 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               SizedBox(
                 width: double.infinity,
                 child: FilledButton(
-                  onPressed: () => _placeOrder(),
-                  child: const Text('Place Order'),
+                  onPressed: _placing ? null : _placeOrder,
+                  child: _placing
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Text('Place Order'),
                 ),
               ),
             ],
@@ -92,8 +100,37 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     );
   }
 
-  void _placeOrder() {
-    ref.read(cartProvider.notifier).clear();
-    context.go('/order-confirmation');
+  Future<void> _placeOrder() async {
+    final name = _nameCtrl.text.trim();
+    final addressLine = _addressCtrl.text.trim();
+    final city = _cityCtrl.text.trim();
+    if (name.isEmpty || addressLine.isEmpty || city.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill in your delivery details')),
+      );
+      return;
+    }
+
+    final cart = ref.read(cartProvider);
+    if (cart.isEmpty) {
+      context.go('/');
+      return;
+    }
+
+    setState(() => _placing = true);
+    try {
+      final address = '$name, $addressLine, $city';
+      await placeOrder(ref, cart, address);
+      ref.read(cartProvider.notifier).clear();
+      if (mounted) context.go('/order-confirmation');
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not place order: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _placing = false);
+    }
   }
 }
