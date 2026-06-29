@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../models/product.dart';
-import '../../state/catalog_providers.dart';
-import '../../shared/widgets/product_card.dart';
-import '../../shared/widgets/section_header.dart';
-import '../../theme/app_theme.dart';
+import 'package:testing_app_brief/models/product.dart';
+import 'package:testing_app_brief/shared/format.dart';
+import 'package:testing_app_brief/shared/widgets/product_image.dart';
+import 'package:testing_app_brief/shared/widgets/rating_stars.dart';
+import 'package:testing_app_brief/shared/widgets/section_header.dart';
+import 'package:testing_app_brief/state/catalog_providers.dart';
+import 'package:testing_app_brief/shared/widgets/product_card.dart';
+import 'package:testing_app_brief/theme/app_theme.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -24,44 +26,7 @@ class HomeScreen extends ConsumerWidget {
         bottom: false,
         child: CustomScrollView(
           slivers: [
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Ara Store',
-                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: -0.3,
-                                ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            'Discover today\'s picks',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: AppColors.inkMuted,
-                                ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () => context.push('/notifications'),
-                      style: IconButton.styleFrom(
-                        backgroundColor: AppColors.surface,
-                        side: const BorderSide(color: AppColors.line),
-                      ),
-                      icon: const Icon(Icons.notifications_none_rounded),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            SliverToBoxAdapter(child: _HomeHeader(onNotifications: () => context.push('/notifications'))),
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
@@ -79,11 +44,7 @@ class HomeScreen extends ConsumerWidget {
                             color: AppColors.brand,
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: const Icon(
-                            Icons.tune_rounded,
-                            color: Colors.white,
-                            size: 20,
-                          ),
+                          child: const Icon(Icons.tune_rounded, color: Colors.white, size: 20),
                         ),
                       ),
                     ),
@@ -98,15 +59,19 @@ class HomeScreen extends ConsumerWidget {
               ),
             ),
             SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-                child: Row(
+              child: SizedBox(
+                height: 72,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
                   children: const [
                     _TrustChip(icon: Icons.local_shipping_outlined, label: 'Free ship \$75+'),
                     SizedBox(width: 8),
                     _TrustChip(icon: Icons.replay_rounded, label: 'Easy returns'),
                     SizedBox(width: 8),
                     _TrustChip(icon: Icons.lock_outline_rounded, label: 'Secure pay'),
+                    SizedBox(width: 8),
+                    _TrustChip(icon: Icons.verified_outlined, label: 'Genuine items'),
                   ],
                 ),
               ),
@@ -137,42 +102,24 @@ class HomeScreen extends ConsumerWidget {
             ),
             if (featured.isNotEmpty) ...[
               SliverToBoxAdapter(
-                child: SectionHeader(
-                  title: 'Best sellers',
-                  onSeeAll: () => context.go('/search'),
-                ),
+                child: SectionHeader(title: 'Best sellers', onSeeAll: () => context.go('/search')),
               ),
-              SliverToBoxAdapter(
-                child: _ProductRail(products: featured),
-              ),
+              SliverToBoxAdapter(child: _ProductRail(products: featured)),
             ],
             if (deals.isNotEmpty) ...[
               SliverToBoxAdapter(
-                child: SectionHeader(
-                  title: 'Today\'s deals',
-                  onSeeAll: () => context.go('/search'),
-                ),
+                child: SectionHeader(title: 'Today\'s deals', onSeeAll: () => context.go('/search')),
               ),
-              SliverToBoxAdapter(
-                child: _ProductRail(products: deals),
-              ),
+              SliverToBoxAdapter(child: _ProductRail(products: deals, showDiscount: true)),
             ],
             if (newArrivals.isNotEmpty) ...[
               SliverToBoxAdapter(
-                child: SectionHeader(
-                  title: 'New arrivals',
-                  onSeeAll: () => context.go('/search'),
-                ),
+                child: SectionHeader(title: 'New arrivals', onSeeAll: () => context.go('/search')),
               ),
-              SliverToBoxAdapter(
-                child: _ProductRail(products: newArrivals),
-              ),
+              SliverToBoxAdapter(child: _ProductRail(products: newArrivals, showBadge: true)),
             ],
             SliverToBoxAdapter(
-              child: SectionHeader(
-                title: 'All products',
-                onSeeAll: () => context.go('/search'),
-              ),
+              child: SectionHeader(title: 'All products', onSeeAll: () => context.go('/search')),
             ),
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
@@ -191,6 +138,88 @@ class HomeScreen extends ConsumerWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _HomeHeader extends StatelessWidget {
+  const _HomeHeader({required this.onNotifications});
+
+  final VoidCallback onNotifications;
+
+  String get _greeting {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return 'Good morning';
+    if (hour < 17) return 'Good afternoon';
+    return 'Good evening';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _greeting,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.inkMuted),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  'Ara Store',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -0.3,
+                      ),
+                ),
+                const SizedBox(height: 8),
+                Material(
+                  color: AppColors.surface,
+                  borderRadius: BorderRadius.circular(20),
+                  child: InkWell(
+                    onTap: () => context.push('/addresses'),
+                    borderRadius: BorderRadius.circular(20),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: AppColors.line),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.location_on_outlined, size: 16, color: AppColors.brand),
+                          const SizedBox(width: 4),
+                          Text(
+                            'Deliver to Home',
+                            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                          ),
+                          const SizedBox(width: 2),
+                          const Icon(Icons.keyboard_arrow_down_rounded, size: 18, color: AppColors.inkMuted),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          IconButton(
+            onPressed: onNotifications,
+            style: IconButton.styleFrom(
+              backgroundColor: AppColors.surface,
+              side: const BorderSide(color: AppColors.line),
+            ),
+            icon: const Icon(Icons.notifications_none_rounded),
+          ),
+        ],
       ),
     );
   }
@@ -226,10 +255,7 @@ class _PromoBanner extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 4,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
                           color: Colors.white.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(20),
@@ -262,10 +288,7 @@ class _PromoBanner extends StatelessWidget {
                           foregroundColor: AppColors.brand,
                           minimumSize: const Size(0, 40),
                           padding: const EdgeInsets.symmetric(horizontal: 18),
-                          textStyle: const TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w800,
-                          ),
+                          textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
                         ),
                         child: const Text('Shop deals'),
                       ),
@@ -280,11 +303,7 @@ class _PromoBanner extends StatelessWidget {
                     color: Colors.white.withValues(alpha: 0.15),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
-                    Icons.local_offer_rounded,
-                    color: Colors.white,
-                    size: 36,
-                  ),
+                  child: const Icon(Icons.local_offer_rounded, color: Colors.white, size: 36),
                 ),
               ],
             ),
@@ -303,32 +322,32 @@ class _TrustChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.line),
-        ),
-        child: Column(
-          children: [
-            Icon(icon, size: 18, color: AppColors.brand),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.w600,
-                color: AppColors.inkMuted,
-                height: 1.2,
-              ),
+    return Container(
+      width: 108,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.line),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 18, color: AppColors.brand),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+              color: AppColors.inkMuted,
+              height: 1.2,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -375,10 +394,7 @@ class _CategoryTile extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 category.name,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
               ),
             ],
           ),
@@ -389,22 +405,153 @@ class _CategoryTile extends StatelessWidget {
 }
 
 class _ProductRail extends StatelessWidget {
-  const _ProductRail({required this.products});
+  const _ProductRail({
+    required this.products,
+    this.showDiscount = false,
+    this.showBadge = false,
+  });
 
   final List<Product> products;
+  final bool showDiscount;
+  final bool showBadge;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 280,
+      height: 248,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 20),
         itemCount: products.length,
         separatorBuilder: (_, __) => const SizedBox(width: 12),
-        itemBuilder: (context, i) => SizedBox(
-          width: 168,
-          child: ProductCard(product: products[i]),
+        itemBuilder: (context, i) => _CompactProductCard(
+          product: products[i],
+          showDiscount: showDiscount,
+          showBadge: showBadge,
+        ),
+      ),
+    );
+  }
+}
+
+class _CompactProductCard extends StatelessWidget {
+  const _CompactProductCard({
+    required this.product,
+    this.showDiscount = false,
+    this.showBadge = false,
+  });
+
+  final Product product;
+  final bool showDiscount;
+  final bool showBadge;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => context.push('/product/${product.id}'),
+        borderRadius: BorderRadius.circular(AppTheme.radius),
+        child: Ink(
+          width: 156,
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(AppTheme.radius),
+            border: Border.all(color: AppColors.line),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Stack(
+                  children: [
+                    ProductImage(
+                      icon: product.icon,
+                      tintIndex: product.tintIndex,
+                      radius: AppTheme.radius,
+                      iconSize: 44,
+                    ),
+                    if (showDiscount && product.onSale)
+                      Positioned(
+                        top: 8,
+                        left: 8,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: AppColors.accent,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            '-${product.discountPercent}%',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                      ),
+                    if (showBadge && product.badge != null)
+                      Positioned(
+                        top: 8,
+                        left: 8,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: AppColors.brand,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            product.badge!,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      product.name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12),
+                    ),
+                    const SizedBox(height: 4),
+                    RatingStars(rating: product.rating, size: 11),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Text(
+                          money(product.price),
+                          style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13),
+                        ),
+                        if (product.onSale) ...[
+                          const SizedBox(width: 4),
+                          Text(
+                            money(product.compareAt!),
+                            style: const TextStyle(
+                              fontSize: 10,
+                              color: AppColors.inkMuted,
+                              decoration: TextDecoration.lineThrough,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
