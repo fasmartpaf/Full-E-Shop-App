@@ -10,7 +10,6 @@ class SearchScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final query = ref.watch(searchQueryProvider);
     final products = ref.watch(filteredProductsProvider);
 
     return Scaffold(

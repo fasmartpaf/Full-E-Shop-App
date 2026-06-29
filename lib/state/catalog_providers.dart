@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../data/catalog_repository.dart';
 import '../data/mock_catalog.dart';
 import '../models/product.dart';
 

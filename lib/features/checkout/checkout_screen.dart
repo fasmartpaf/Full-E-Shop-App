@@ -44,7 +44,10 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Delivery Address', style: Theme.of(context).textTheme.headlineSmall),
+              Text(
+                'Delivery Address',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
               const SizedBox(height: 16),
               TextField(
                 controller: _nameCtrl,
@@ -61,7 +64,10 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                 decoration: const InputDecoration(hintText: 'City'),
               ),
               const SizedBox(height: 32),
-              Text('Order Summary', style: Theme.of(context).textTheme.headlineSmall),
+              Text(
+                'Order Summary',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
               const SizedBox(height: 16),
               ListTile(
                 title: const Text('Subtotal'),
@@ -74,8 +80,13 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               const Divider(),
               ListTile(
                 title: const Text('Total'),
-                trailing: Text('\$${cart.total.toStringAsFixed(2)}',
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                trailing: Text(
+                  '\$${cart.total.toStringAsFixed(2)}',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
               ),
               const SizedBox(height: 32),
               SizedBox(

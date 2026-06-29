@@ -1,8 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../data/mock_catalog.dart';
-import '../data/orders_repository.dart';
 import '../models/cart_item.dart';
 import '../models/order.dart';
 import 'auth_provider.dart';
@@ -45,7 +42,7 @@ final firestoreOrdersProvider = StreamProvider.autoDispose<List<Order>>((ref) {
 final orderHistoryProvider = Provider<List<Order>>((ref) {
   final user = ref.watch(currentUserProvider);
   final ready = ref.watch(firebaseReadyProvider);
-  if (ready && user != null) {
+  if (ready && user.value != null) {
     return ref.watch(firestoreOrdersProvider).asData?.value ?? const [];
   }
   return ref.watch(ordersProvider);

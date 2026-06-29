@@ -56,7 +56,7 @@ class ProductCard extends ConsumerWidget {
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
+                              color: Colors.black.withValues(alpha: 0.1),
                               blurRadius: 4,
                             ),
                           ],
