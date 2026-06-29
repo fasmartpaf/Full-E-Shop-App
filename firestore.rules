@@ -1,0 +1,20 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Catalog: readable by anyone, writes only from console / admin SDK.
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Per-user data: each signed-in user owns their orders, cart, wishlist.
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      match /{document=**} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+  }
+}
