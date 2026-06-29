@@ -12,6 +12,14 @@ class WishlistNotifier extends StateNotifier<Set<String>> {
     state = next;
   }
 
+  void add(String productId) {
+    state = {...state, productId};
+  }
+
+  void remove(String productId) {
+    state = {...state}..remove(productId);
+  }
+
   bool contains(String id) => state.contains(id);
 }
 

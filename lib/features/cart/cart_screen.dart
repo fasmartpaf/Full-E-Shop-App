@@ -8,7 +8,6 @@ import '../../shared/widgets/product_image.dart';
 import '../../shared/widgets/quantity_selector.dart';
 import '../../state/cart_provider.dart';
 import '../../theme/app_theme.dart';
-import '../home/home_screen.dart';
 
 class CartScreen extends ConsumerWidget {
   const CartScreen({super.key});
@@ -29,15 +28,25 @@ class CartScreen extends ConsumerWidget {
         ],
       ),
       body: cart.isEmpty
-          ? EmptyState(
-              icon: Icons.shopping_bag_outlined,
-              title: 'Your cart is empty',
-              message: 'Browse the store and add items you love.',
-              action: FilledButton(
-                onPressed: () => context.go('/'),
-                style: FilledButton.styleFrom(
-                    minimumSize: const Size(180, 50)),
-                child: const Text('Start shopping'),
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(32),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.shopping_bag_outlined, size: 64, color: Colors.grey[400]),
+                    const SizedBox(height: 16),
+                    Text('Your cart is empty', style: Theme.of(context).textTheme.headlineSmall),
+                    const SizedBox(height: 8),
+                    const Text('Browse the store and add items you love.'),
+                    const SizedBox(height: 24),
+                    FilledButton(
+                      onPressed: () => context.go('/'),
+                      style: FilledButton.styleFrom(minimumSize: const Size(180, 50)),
+                      child: const Text('Start shopping'),
+                    ),
+                  ],
+                ),
               ),
             )
           : Column(
@@ -47,8 +56,7 @@ class CartScreen extends ConsumerWidget {
                     padding: const EdgeInsets.all(20),
                     itemCount: cart.items.length,
                     separatorBuilder: (_, __) => const SizedBox(height: 12),
-                    itemBuilder: (_, i) =>
-                        _CartTile(item: cart.items[i]),
+                    itemBuilder: (_, i) => _CartTile(item: cart.items[i]),
                   ),
                 ),
                 _CouponField(cart: cart),
@@ -248,7 +256,7 @@ class _Summary extends StatelessWidget {
             _row('Total', money(cart.total), bold: true),
             const SizedBox(height: 14),
             FilledButton(
-              onPressed: () => context.push('/checkout'),
+              onPressed: () => GoRouter.of(context).push('/checkout'),
               child: Text('Checkout · ${money(cart.total)}'),
             ),
           ],

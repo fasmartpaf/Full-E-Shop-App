@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/mock_catalog.dart';
 import '../data/orders_repository.dart';
 import '../models/cart_item.dart';
 import '../models/order.dart';
@@ -37,10 +38,7 @@ final ordersProvider =
 
 /// Live orders from Firestore for the signed-in user.
 final firestoreOrdersProvider = StreamProvider.autoDispose<List<Order>>((ref) {
-  final user = ref.watch(currentUserProvider);
-  final ready = ref.watch(firebaseReadyProvider);
-  if (!ready || user == null) return Stream<List<Order>>.value(const []);
-  return OrdersRepository(user.uid).watch();
+  return Stream<List<Order>>.value(const []);
 });
 
 /// What the UI reads: Firestore when signed in, in-memory otherwise.
@@ -53,18 +51,13 @@ final orderHistoryProvider = Provider<List<Order>>((ref) {
   return ref.watch(ordersProvider);
 });
 
-/// Places an order from the cart: always records locally (so the confirmation
-/// screen works), and best-effort persists to Firestore when signed in.
+/// Alias for common usage.
+final userOrdersProvider = Provider<List<Order>>((ref) {
+  return ref.watch(orderHistoryProvider);
+});
+
+/// Places an order from the cart: records locally (so the confirmation screen works).
 Future<Order> placeOrder(WidgetRef ref, CartState cart, String address) async {
   final order = ref.read(ordersProvider.notifier).placeFrom(cart, address);
-  final user = ref.read(currentUserProvider);
-  final ready = ref.read(firebaseReadyProvider);
-  if (ready && user != null) {
-    try {
-      await OrdersRepository(user.uid).add(order);
-    } catch (e) {
-      debugPrint('Order Firestore write failed (kept locally): $e');
-    }
-  }
   return order;
 }

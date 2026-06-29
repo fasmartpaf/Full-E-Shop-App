@@ -43,3 +43,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Open Design — transient agent skill staging (do not commit)
+.od-skills/

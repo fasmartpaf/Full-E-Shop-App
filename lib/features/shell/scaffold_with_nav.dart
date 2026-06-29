@@ -6,17 +6,22 @@ import '../../state/cart_provider.dart';
 import '../../theme/app_theme.dart';
 
 class ScaffoldWithNav extends ConsumerWidget {
-  const ScaffoldWithNav({super.key, required this.navigationShell});
+  const ScaffoldWithNav({
+    super.key,
+    required this.child,
+  });
 
-  final StatefulNavigationShell navigationShell;
+  final Widget child;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final cartCount = ref.watch(cartCountProvider);
-    final i = navigationShell.currentIndex;
+    final location = GoRouterState.of(context).uri.path;
+
+    final currentIndex = _getIndexFromLocation(location);
 
     return Scaffold(
-      body: navigationShell,
+      body: child,
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
           color: AppColors.surface,
@@ -32,37 +37,37 @@ class ScaffoldWithNav extends ConsumerWidget {
                   icon: Icons.home_outlined,
                   active: Icons.home_rounded,
                   label: 'Home',
-                  selected: i == 0,
-                  onTap: () => _go(0),
+                  selected: currentIndex == 0,
+                  onTap: () => context.go('/'),
                 ),
                 _NavItem(
                   icon: Icons.search_rounded,
                   active: Icons.search_rounded,
                   label: 'Search',
-                  selected: i == 1,
-                  onTap: () => _go(1),
+                  selected: currentIndex == 1,
+                  onTap: () => context.go('/search'),
                 ),
                 _NavItem(
                   icon: Icons.shopping_bag_outlined,
                   active: Icons.shopping_bag_rounded,
                   label: 'Cart',
-                  selected: i == 2,
+                  selected: currentIndex == 2,
                   badge: cartCount,
-                  onTap: () => _go(2),
+                  onTap: () => context.go('/cart'),
                 ),
                 _NavItem(
                   icon: Icons.favorite_border_rounded,
                   active: Icons.favorite_rounded,
                   label: 'Wishlist',
-                  selected: i == 3,
-                  onTap: () => _go(3),
+                  selected: currentIndex == 3,
+                  onTap: () => context.go('/wishlist'),
                 ),
                 _NavItem(
                   icon: Icons.person_outline_rounded,
                   active: Icons.person_rounded,
                   label: 'Account',
-                  selected: i == 4,
-                  onTap: () => _go(4),
+                  selected: currentIndex == 4,
+                  onTap: () => context.go('/profile'),
                 ),
               ],
             ),
@@ -72,10 +77,14 @@ class ScaffoldWithNav extends ConsumerWidget {
     );
   }
 
-  void _go(int index) => navigationShell.goBranch(
-        index,
-        initialLocation: index == navigationShell.currentIndex,
-      );
+  int _getIndexFromLocation(String location) {
+    if (location == '/') return 0;
+    if (location.startsWith('/search')) return 1;
+    if (location.startsWith('/cart')) return 2;
+    if (location.startsWith('/wishlist')) return 3;
+    if (location.startsWith('/profile')) return 4;
+    return 0;
+  }
 }
 
 class _NavItem extends StatelessWidget {
