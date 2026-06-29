@@ -38,10 +38,7 @@ class AuthController {
       email: email,
       password: password,
     );
-    await UserRepository().createProfile(
-      cred.user!,
-      name: name,
-    );
+    await UserRepository().create(cred.user!.uid, {'name': name, 'email': email});
   }
 
   Future<void> signOut() => FirebaseAuth.instance.signOut();
