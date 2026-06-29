@@ -14,7 +14,7 @@ class PaymentMethodsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Payment Methods'),
+        title: const Text('Payment methods'),
       ),
       body: cards.isEmpty
           ? Center(
@@ -23,15 +23,38 @@ class PaymentMethodsScreen extends ConsumerWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.credit_card_off_outlined, size: 64, color: Colors.grey[400]),
-                    const SizedBox(height: 16),
-                    Text('No saved cards', style: Theme.of(context).textTheme.headlineSmall),
+                    Container(
+                      width: 72,
+                      height: 72,
+                      decoration: BoxDecoration(
+                        color: AppColors.brand.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Icon(
+                        Icons.credit_card_outlined,
+                        size: 36,
+                        color: AppColors.brand,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      'No saved cards',
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                            fontWeight: FontWeight.w800,
+                          ),
+                    ),
                     const SizedBox(height: 8),
-                    const Text('Add a card for faster checkout.'),
+                    const Text(
+                      'Add a card for faster checkout. Demo only — no real charges.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: AppColors.inkMuted, height: 1.4),
+                    ),
                     const SizedBox(height: 24),
                     FilledButton(
                       onPressed: () => _openForm(context, ref),
-                      style: FilledButton.styleFrom(minimumSize: const Size(180, 50)),
+                      style: FilledButton.styleFrom(
+                        minimumSize: const Size(180, 50),
+                      ),
                       child: const Text('Add card'),
                     ),
                   ],
@@ -39,37 +62,56 @@ class PaymentMethodsScreen extends ConsumerWidget {
               ),
             )
           : ListView.separated(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 90),
               itemCount: cards.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 12),
-              itemBuilder: (_, i) => _PaymentMethodTile(
+              separatorBuilder: (_, __) => const SizedBox(height: 14),
+              itemBuilder: (_, i) => _PaymentCardTile(
                 method: cards[i],
                 onDelete: () => _deleteCard(context, ref, cards[i]),
+                onSetDefault: cards[i].isDefault
+                    ? null
+                    : () => ref
+                        .read(paymentMethodsProvider.notifier)
+                        .setDefault(cards[i].id),
               ),
             ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _openForm(context, ref),
-        child: const Icon(Icons.add),
+        backgroundColor: AppColors.brand,
+        icon: const Icon(Icons.add_rounded, color: Colors.white),
+        label: const Text(
+          'Add card',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+        ),
       ),
     );
   }
 
   void _openForm(BuildContext context, WidgetRef ref) {
-    showDialog(
+    showModalBottomSheet<void>(
       context: context,
-      builder: (ctx) => _PaymentFormDialog(onSubmit: (method) {
-        ref.read(paymentMethodsProvider.notifier).add(method);
-        Navigator.pop(ctx);
-      }),
+      isScrollControlled: true,
+      useSafeArea: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => _PaymentFormSheet(
+        onSubmit: (method) {
+          ref.read(paymentMethodsProvider.notifier).add(method);
+          Navigator.pop(ctx);
+        },
+      ),
     );
   }
 
   void _deleteCard(BuildContext context, WidgetRef ref, PaymentMethod method) {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete card?'),
-        content: Text('Remove ${method.brandLabel} ending in ${method.last4}?'),
+        title: const Text('Remove card?'),
+        content: Text(
+          'Remove ${method.brandLabel} ending in ${method.last4}?',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
@@ -80,7 +122,7 @@ class PaymentMethodsScreen extends ConsumerWidget {
               ref.read(paymentMethodsProvider.notifier).remove(method.id);
               Navigator.pop(ctx);
             },
-            child: const Text('Delete'),
+            child: const Text('Remove'),
           ),
         ],
       ),
@@ -88,71 +130,196 @@ class PaymentMethodsScreen extends ConsumerWidget {
   }
 }
 
-class _PaymentMethodTile extends StatelessWidget {
-  final PaymentMethod method;
-  final VoidCallback onDelete;
-
-  const _PaymentMethodTile({
+class _PaymentCardTile extends StatelessWidget {
+  const _PaymentCardTile({
     required this.method,
     required this.onDelete,
+    this.onSetDefault,
   });
+
+  final PaymentMethod method;
+  final VoidCallback onDelete;
+  final VoidCallback? onSetDefault;
+
+  List<Color> _gradient() => switch (method.brand) {
+        CardBrand.visa => [const Color(0xFF1A1F71), const Color(0xFF2D3A8C)],
+        CardBrand.mastercard => [const Color(0xFFEB001B), const Color(0xFFF79E1B)],
+        CardBrand.amex => [const Color(0xFF2E77BC), const Color(0xFF006FCF)],
+        CardBrand.other => [AppColors.brand, const Color(0xFF6C5CE7)],
+      };
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      height: 190,
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppTheme.radius),
-        border: Border.all(color: AppColors.line),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: _gradient(),
+        ),
+        borderRadius: BorderRadius.circular(AppTheme.radius + 2),
+        boxShadow: [
+          BoxShadow(
+            color: _gradient().first.withValues(alpha: 0.35),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          Row(
-            children: [
-              Icon(Icons.credit_card, color: method.brandColor, size: 28),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          Positioned(
+            right: -20,
+            top: -20,
+            child: Icon(
+              Icons.circle,
+              size: 120,
+              color: Colors.white.withValues(alpha: 0.06),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   children: [
-                    Text(method.brandLabel, style: const TextStyle(fontWeight: FontWeight.w600)),
-                    Text(method.masked, style: Theme.of(context).textTheme.bodySmall),
+                    Text(
+                      method.brandLabel,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 16,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    const Spacer(),
+                    if (method.isDefault)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: const Text(
+                          'Default',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                    PopupMenuButton<String>(
+                      icon: const Icon(Icons.more_horiz_rounded, color: Colors.white),
+                      color: AppColors.surface,
+                      onSelected: (value) {
+                        if (value == 'default') onSetDefault?.call();
+                        if (value == 'delete') onDelete();
+                      },
+                      itemBuilder: (_) => [
+                        if (onSetDefault != null)
+                          const PopupMenuItem(
+                            value: 'default',
+                            child: Text('Set as default'),
+                          ),
+                        const PopupMenuItem(
+                          value: 'delete',
+                          child: Text(
+                            'Remove',
+                            style: TextStyle(color: AppColors.accent),
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
-              ),
-              if (method.isDefault)
-                Chip(
-                  label: const Text('Default'),
-                  backgroundColor: AppColors.accentSoft,
-                  labelStyle: const TextStyle(color: AppColors.ink, fontSize: 12),
+                const Spacer(),
+                Text(
+                  method.masked,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 2,
+                  ),
                 ),
-              IconButton(
-                icon: const Icon(Icons.delete_outline),
-                onPressed: onDelete,
-                color: AppColors.accent,
-              ),
-            ],
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'CARDHOLDER',
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.7),
+                              fontSize: 10,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.8,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            method.holder,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          'EXPIRES',
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.7),
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.8,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          method.expiry,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-          const SizedBox(height: 12),
-          Text('Expires ${method.expiry}', style: Theme.of(context).textTheme.bodySmall),
         ],
       ),
     );
   }
 }
 
-class _PaymentFormDialog extends StatefulWidget {
-  final Function(PaymentMethod) onSubmit;
+class _PaymentFormSheet extends StatefulWidget {
+  const _PaymentFormSheet({required this.onSubmit});
 
-  const _PaymentFormDialog({required this.onSubmit});
+  final ValueChanged<PaymentMethod> onSubmit;
 
   @override
-  State<_PaymentFormDialog> createState() => _PaymentFormDialogState();
+  State<_PaymentFormSheet> createState() => _PaymentFormSheetState();
 }
 
-class _PaymentFormDialogState extends State<_PaymentFormDialog> {
+class _PaymentFormSheetState extends State<_PaymentFormSheet> {
   late final _numberController = TextEditingController();
   late final _nameController = TextEditingController();
   late final _expiryController = TextEditingController();
@@ -167,11 +334,15 @@ class _PaymentFormDialogState extends State<_PaymentFormDialog> {
   }
 
   void _submit() {
-    if (_numberController.text.isEmpty ||
-        _nameController.text.isEmpty ||
-        _expiryController.text.isEmpty) {
+    final digits = _numberController.text.replaceAll(RegExp(r'\s+'), '');
+    if (digits.length < 13 ||
+        _nameController.text.trim().isEmpty ||
+        _expiryController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill in all fields')),
+        const SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: Text('Please fill in all fields'),
+        ),
       );
       return;
     }
@@ -179,77 +350,102 @@ class _PaymentFormDialogState extends State<_PaymentFormDialog> {
     final expParts = _expiryController.text.split('/');
     if (expParts.length != 2) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Expiry must be MM/YY')),
+        const SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: Text('Expiry must be MM/YY'),
+        ),
       );
       return;
     }
 
-    final method = PaymentMethod(
+    widget.onSubmit(PaymentMethod(
       id: '',
-      holder: _nameController.text,
-      last4: _numberController.text.replaceAll(RegExp(r'\s+'), '').substring(12),
+      holder: _nameController.text.trim(),
+      last4: digits.substring(digits.length - 4),
       expMonth: int.tryParse(expParts[0]) ?? 0,
       expYear: int.tryParse(expParts[1]) ?? 0,
-      brand: PaymentMethod.brandFromNumber(_numberController.text),
+      brand: PaymentMethod.brandFromNumber(digits),
       isDefault: _isDefault,
-    );
-
-    widget.onSubmit(method);
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Add Payment Method'),
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: _numberController,
-              decoration: const InputDecoration(
-                hintText: 'Card number',
-                prefixIcon: Icon(Icons.credit_card),
-              ),
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                hintText: 'Cardholder name',
-                prefixIcon: Icon(Icons.person),
+    final bottom = MediaQuery.viewInsetsOf(context).bottom;
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(20, 12, 20, 20 + bottom),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: AppColors.line,
+                borderRadius: BorderRadius.circular(4),
               ),
             ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _expiryController,
-              decoration: const InputDecoration(
-                hintText: 'MM/YY',
-                prefixIcon: Icon(Icons.calendar_today),
-              ),
-              keyboardType: TextInputType.number,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Add payment method',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            'Demo only — card data is not stored or charged.',
+            style: TextStyle(color: AppColors.inkMuted),
+          ),
+          const SizedBox(height: 20),
+          TextField(
+            controller: _numberController,
+            decoration: const InputDecoration(
+              hintText: 'Card number',
+              prefixIcon: Icon(Icons.credit_card_outlined),
             ),
-            const SizedBox(height: 16),
-            CheckboxListTile(
-              value: _isDefault,
-              onChanged: (v) => setState(() => _isDefault = v ?? false),
-              title: const Text('Set as default'),
-              contentPadding: EdgeInsets.zero,
+            keyboardType: TextInputType.number,
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _nameController,
+            textCapitalization: TextCapitalization.words,
+            decoration: const InputDecoration(
+              hintText: 'Cardholder name',
+              prefixIcon: Icon(Icons.person_outline_rounded),
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _expiryController,
+            decoration: const InputDecoration(
+              hintText: 'MM/YY',
+              prefixIcon: Icon(Icons.calendar_today_outlined),
+            ),
+            keyboardType: TextInputType.number,
+          ),
+          const SizedBox(height: 12),
+          SwitchListTile(
+            value: _isDefault,
+            onChanged: (v) => setState(() => _isDefault = v),
+            activeThumbColor: AppColors.brand,
+            contentPadding: EdgeInsets.zero,
+            title: const Text(
+              'Set as default',
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+          ),
+          const SizedBox(height: 16),
+          FilledButton(
+            onPressed: _submit,
+            child: const Text('Save card'),
+          ),
+        ],
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
-        ),
-        FilledButton(
-          onPressed: _submit,
-          child: const Text('Add Card'),
-        ),
-      ],
     );
   }
 }

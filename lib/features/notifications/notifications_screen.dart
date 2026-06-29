@@ -12,12 +12,68 @@ class NotificationsScreen extends ConsumerWidget {
     final prefs = ref.watch(notificationPrefsProvider);
     final notifier = ref.read(notificationPrefsProvider.notifier);
     final feed = ref.watch(notificationsListProvider);
+    final unread = feed.where((n) => n.unread).length;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Notifications')),
+      appBar: AppBar(
+        title: const Text('Notifications'),
+        actions: [
+          if (unread > 0)
+            TextButton(
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    behavior: SnackBarBehavior.floating,
+                    content: Text('All notifications marked as read'),
+                  ),
+                );
+              },
+              child: const Text('Mark all read'),
+            ),
+        ],
+      ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
         children: [
+          if (unread > 0)
+            Container(
+              margin: const EdgeInsets.only(bottom: 16),
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    AppColors.brand.withValues(alpha: 0.12),
+                    AppColors.brand.withValues(alpha: 0.04),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(AppTheme.radius),
+                border: Border.all(color: AppColors.brand.withValues(alpha: 0.2)),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: AppColors.brand.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(
+                      Icons.notifications_active_rounded,
+                      color: AppColors.brand,
+                      size: 22,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'You have $unread unread notification${unread == 1 ? '' : 's'}',
+                      style: const TextStyle(fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           const _Heading('Recent'),
           for (final n in feed) ...[
             _NotificationTile(n: n),
@@ -33,21 +89,45 @@ class NotificationsScreen extends ConsumerWidget {
             ),
             child: Column(
               children: [
-                _toggle('Push notifications', 'On-device alerts', prefs.push,
-                    (v) => notifier.toggle('push', v)),
-                const Divider(height: 1),
-                _toggle('Order updates', 'Shipping & delivery status',
-                    prefs.orderUpdates,
-                    (v) => notifier.toggle('orderUpdates', v)),
-                const Divider(height: 1),
-                _toggle('Price drops', 'Wishlist items on sale',
-                    prefs.priceDrops, (v) => notifier.toggle('priceDrops', v)),
-                const Divider(height: 1),
-                _toggle('Promotions', 'Deals & offers', prefs.promotions,
-                    (v) => notifier.toggle('promotions', v)),
-                const Divider(height: 1),
-                _toggle('Email', 'Receipts & newsletters', prefs.email,
-                    (v) => notifier.toggle('email', v)),
+                _toggle(
+                  Icons.notifications_outlined,
+                  'Push notifications',
+                  'On-device alerts',
+                  prefs.push,
+                  (v) => notifier.toggle('push', v),
+                ),
+                const Divider(height: 1, indent: 56),
+                _toggle(
+                  Icons.local_shipping_outlined,
+                  'Order updates',
+                  'Shipping & delivery status',
+                  prefs.orderUpdates,
+                  (v) => notifier.toggle('orderUpdates', v),
+                ),
+                const Divider(height: 1, indent: 56),
+                _toggle(
+                  Icons.trending_down_rounded,
+                  'Price drops',
+                  'Wishlist items on sale',
+                  prefs.priceDrops,
+                  (v) => notifier.toggle('priceDrops', v),
+                ),
+                const Divider(height: 1, indent: 56),
+                _toggle(
+                  Icons.local_offer_outlined,
+                  'Promotions',
+                  'Deals & offers',
+                  prefs.promotions,
+                  (v) => notifier.toggle('promotions', v),
+                ),
+                const Divider(height: 1, indent: 56),
+                _toggle(
+                  Icons.mail_outline_rounded,
+                  'Email',
+                  'Receipts & newsletters',
+                  prefs.email,
+                  (v) => notifier.toggle('email', v),
+                ),
               ],
             ),
           ),
@@ -56,14 +136,31 @@ class NotificationsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _toggle(String title, String sub, bool value, ValueChanged<bool> on) {
+  Widget _toggle(
+    IconData icon,
+    String title,
+    String sub,
+    bool value,
+    ValueChanged<bool> on,
+  ) {
     return SwitchListTile(
       value: value,
       onChanged: on,
-      activeColor: AppColors.brand,
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
-      subtitle: Text(sub,
-          style: const TextStyle(color: AppColors.inkMuted, fontSize: 12.5)),
+      activeThumbColor: AppColors.brand,
+      secondary: Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+          color: AppColors.brand.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Icon(icon, color: AppColors.brand, size: 20),
+      ),
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
+      subtitle: Text(
+        sub,
+        style: const TextStyle(color: AppColors.inkMuted, fontSize: 12.5),
+      ),
     );
   }
 }
@@ -71,11 +168,14 @@ class NotificationsScreen extends ConsumerWidget {
 class _Heading extends StatelessWidget {
   const _Heading(this.text);
   final String text;
+
   @override
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.fromLTRB(2, 6, 0, 10),
-        child: Text(text,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
+        child: Text(
+          text,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+        ),
       );
 }
 
@@ -88,9 +188,15 @@ class _NotificationTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: n.unread ? AppColors.brand.withValues(alpha: 0.05) : AppColors.surface,
+        color: n.unread
+            ? AppColors.brand.withValues(alpha: 0.05)
+            : AppColors.surface,
         borderRadius: BorderRadius.circular(AppTheme.radius),
-        border: Border.all(color: AppColors.line),
+        border: Border.all(
+          color: n.unread
+              ? AppColors.brand.withValues(alpha: 0.25)
+              : AppColors.line,
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,19 +218,40 @@ class _NotificationTile extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: Text(n.title,
-                          style:
-                              const TextStyle(fontWeight: FontWeight.w700)),
+                      child: Text(
+                        n.title,
+                        style: TextStyle(
+                          fontWeight: n.unread ? FontWeight.w800 : FontWeight.w700,
+                        ),
+                      ),
                     ),
-                    Text(n.ago,
-                        style: const TextStyle(
-                            color: AppColors.inkMuted, fontSize: 12)),
+                    if (n.unread)
+                      Container(
+                        width: 8,
+                        height: 8,
+                        margin: const EdgeInsets.only(right: 6),
+                        decoration: const BoxDecoration(
+                          color: AppColors.brand,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    Text(
+                      n.ago,
+                      style: const TextStyle(
+                        color: AppColors.inkMuted,
+                        fontSize: 12,
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 2),
-                Text(n.body,
-                    style: const TextStyle(
-                        color: AppColors.inkMuted, height: 1.35)),
+                Text(
+                  n.body,
+                  style: const TextStyle(
+                    color: AppColors.inkMuted,
+                    height: 1.35,
+                  ),
+                ),
               ],
             ),
           ),

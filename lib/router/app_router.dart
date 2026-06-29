@@ -12,6 +12,7 @@ import '../features/search/search_screen.dart';
 import '../features/wishlist/wishlist_screen.dart';
 import '../features/shell/scaffold_with_nav.dart';
 import '../features/orders/order_detail_screen.dart';
+import '../features/orders/orders_screen.dart';
 import '../features/orders/order_confirmation_screen.dart';
 import '../features/addresses/addresses_screen.dart';
 import '../features/payment/payment_methods_screen.dart';
@@ -89,6 +90,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         name: 'order-confirmation',
         parentNavigatorKey: _rootKey,
         builder: (_, __) => const OrderConfirmationScreen(),
+      ),
+      GoRoute(
+        path: '/orders',
+        name: 'orders',
+        parentNavigatorKey: _rootKey,
+        builder: (_, __) => const OrdersScreen(),
       ),
       GoRoute(
         path: '/order/:id',
