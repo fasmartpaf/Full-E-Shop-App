@@ -2,7 +2,14 @@ cmake_minimum_required(VERSION 3.10)
 project(testing_app_brief)
 
 set(BINARY_NAME "testing_app_brief")
-set(BINARY_NAME_LIB "lib${BINARY_NAME}")
+
+cmake_policy(SET CMP0063 NEW)
+
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+set(CMAKE_C_VISIBILITY_PRESET hidden)
+set(CMAKE_VISIBILITY_INLINES_HIDDEN ON)
+
+set(CMAKE_CXX_STANDARD 14)
 
 # Resolve the Flutter root directory from the flutter binary.
 execute_process(
@@ -17,13 +24,13 @@ else()
   message(FATAL_ERROR "Flutter not found. Ensure Flutter is in PATH.")
 endif()
 
-set(FLUTTER_EXECUTABLE "${FLUTTER_ROOT}/bin/flutter")
+include("${FLUTTER_ROOT}/packages/flutter_tools/cmake/flutter.cmake")
 
-add_subdirectory("flutter")
-
-# System-level dependencies. Add any linux-only deps here.
+# System-level dependencies.
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GTK gtk+-3.0 REQUIRED)
+
+add_subdirectory("flutter")
 
 add_executable(${BINARY_NAME}
   "main.cc"
@@ -34,7 +41,7 @@ target_compile_options(${BINARY_NAME} PRIVATE
 )
 
 target_include_directories(${BINARY_NAME} PRIVATE
-  "${CMAKE_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}"
   ${GTK_INCLUDE_DIRS}
 )
 
@@ -43,9 +50,4 @@ target_link_libraries(${BINARY_NAME} PRIVATE
   ${GTK_LIBRARIES}
 )
 
-# Copy the Flutter library's binaries to the executable's directory so that it
-# can find the libflutter.so file when run.
-add_custom_command(TARGET ${BINARY_NAME} POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -P
-    "${FLUTTER_MANAGED_DIR}/generated_plugins_linux.cmake"
-)
+add_dependencies(${BINARY_NAME} flutter_assemble)
