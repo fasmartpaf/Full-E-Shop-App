@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../state/cart_provider.dart';
-import '../../state/orders_provider.dart';
 
 class CheckoutScreen extends ConsumerStatefulWidget {
   const CheckoutScreen({super.key});
@@ -95,6 +94,6 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
 
   void _placeOrder() {
     ref.read(cartProvider.notifier).clear();
-    context.go('/');
+    context.go('/order-confirmation');
   }
 }

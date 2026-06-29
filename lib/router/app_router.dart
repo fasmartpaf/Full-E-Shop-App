@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../features/auth/auth_screen.dart';
 import '../features/cart/cart_screen.dart';
 import '../features/category/category_screen.dart';
+import '../features/checkout/checkout_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/product/product_detail_screen.dart';
 import '../features/search/search_screen.dart';
@@ -80,6 +81,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/checkout',
         name: 'checkout',
+        parentNavigatorKey: _rootKey,
+        builder: (_, __) => const CheckoutScreen(),
+      ),
+      GoRoute(
+        path: '/order-confirmation',
+        name: 'order-confirmation',
         parentNavigatorKey: _rootKey,
         builder: (_, __) => const OrderConfirmationScreen(),
       ),
