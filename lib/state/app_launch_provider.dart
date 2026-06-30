@@ -1,15 +1,16 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const _onboardingKey = 'onboarding_complete';
+const onboardingCompleteKey = 'onboarding_complete';
 
 final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
   throw UnimplementedError('SharedPreferences must be overridden in main.dart');
 });
 
-final onboardingCompleteProvider = FutureProvider<bool>((ref) async {
+/// Whether the user has finished onboarding. Backed by SharedPreferences.
+final onboardingCompleteProvider = Provider<bool>((ref) {
   final prefs = ref.watch(sharedPreferencesProvider);
-  return prefs.getBool(_onboardingKey) ?? false;
+  return prefs.getBool(onboardingCompleteKey) ?? false;
 });
 
 class OnboardingController {
@@ -18,11 +19,11 @@ class OnboardingController {
   final SharedPreferences _prefs;
 
   Future<void> complete() async {
-    await _prefs.setBool(_onboardingKey, true);
+    await _prefs.setBool(onboardingCompleteKey, true);
   }
 
   Future<void> reset() async {
-    await _prefs.remove(_onboardingKey);
+    await _prefs.remove(onboardingCompleteKey);
   }
 }
 

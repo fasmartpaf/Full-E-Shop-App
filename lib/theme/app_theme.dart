@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -53,14 +54,21 @@ class AppTheme {
       error: Color(0xFFE03131),
     );
 
+    final textTheme = kIsWeb
+        ? ThemeData.light().textTheme.apply(
+              bodyColor: AppColors.ink,
+              displayColor: AppColors.ink,
+            )
+        : GoogleFonts.manropeTextTheme().apply(
+              bodyColor: AppColors.ink,
+              displayColor: AppColors.ink,
+            );
+
     final base = ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
       scaffoldBackgroundColor: AppColors.canvas,
-      textTheme: GoogleFonts.manropeTextTheme().apply(
-        bodyColor: AppColors.ink,
-        displayColor: AppColors.ink,
-      ),
+      textTheme: textTheme,
     );
 
     return base.copyWith(

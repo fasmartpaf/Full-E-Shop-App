@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
+import '../../router/app_router.dart';
 import '../../state/app_launch_provider.dart';
 import '../../theme/app_theme.dart';
 
@@ -52,8 +52,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   Future<void> _finish() async {
     await ref.read(onboardingControllerProvider).complete();
-    ref.invalidate(onboardingCompleteProvider);
-    if (mounted) context.go('/');
+    if (!mounted) return;
+    ref.read(appRouterProvider).go('/');
   }
 
   void _next() {

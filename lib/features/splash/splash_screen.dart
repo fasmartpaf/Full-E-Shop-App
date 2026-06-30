@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
+import '../../router/app_router.dart';
 import '../../state/app_launch_provider.dart';
 import '../../theme/app_theme.dart';
 
@@ -30,17 +30,15 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
     );
     _controller.forward();
-    _navigateNext();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _navigateNext());
   }
 
   Future<void> _navigateNext() async {
     await Future<void>.delayed(const Duration(milliseconds: 2200));
     if (!mounted) return;
 
-    final onboardingDone = await ref.read(onboardingCompleteProvider.future);
-    if (!mounted) return;
-
-    context.go(onboardingDone ? '/' : '/onboarding');
+    final onboardingDone = ref.read(onboardingCompleteProvider);
+    ref.read(appRouterProvider).go(onboardingDone ? '/' : '/onboarding');
   }
 
   @override
@@ -76,6 +74,19 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                         width: 96,
                         height: 96,
                         fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Container(
+                          width: 96,
+                          height: 96,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          child: const Icon(
+                            Icons.storefront_rounded,
+                            color: Colors.white,
+                            size: 48,
+                          ),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 24),
