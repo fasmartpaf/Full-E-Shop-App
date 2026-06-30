@@ -26,7 +26,7 @@ final _rootKey = GlobalKey<NavigatorState>();
 final _shellKey = GlobalKey<NavigatorState>();
 
 final appRouterProvider = Provider<GoRouter>((ref) {
-  final router = GoRouter(
+  return GoRouter(
     navigatorKey: _rootKey,
     initialLocation: '/splash',
     routes: [
@@ -142,6 +142,4 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
     ],
   );
-  ref.onDispose(router.dispose);
-  return router;
 });
