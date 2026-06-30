@@ -3,8 +3,23 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 const onboardingCompleteKey = 'onboarding_complete';
 
+/// Survives hot reload so prefs stay available when ProviderScope overrides reset.
+SharedPreferences? _sharedPreferencesCache;
+
+Future<SharedPreferences> bootstrapSharedPreferences() async {
+  return _sharedPreferencesCache ??= await SharedPreferences.getInstance();
+}
+
+void setSharedPreferencesCache(SharedPreferences prefs) {
+  _sharedPreferencesCache = prefs;
+}
+
 final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
-  throw UnimplementedError('SharedPreferences must be overridden in main.dart');
+  final cached = _sharedPreferencesCache;
+  if (cached != null) return cached;
+  throw UnimplementedError(
+    'SharedPreferences not ready. Call bootstrapSharedPreferences() in main().',
+  );
 });
 
 /// Whether the user has finished onboarding. Backed by SharedPreferences.

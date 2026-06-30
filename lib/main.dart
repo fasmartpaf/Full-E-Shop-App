@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
 import 'firebase_options.dart';
@@ -13,12 +12,21 @@ import 'state/firebase_status.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  FlutterError.onError = (details) {
+    FlutterError.presentError(details);
+  };
+  PlatformDispatcher.instance.onError = (error, stack) {
+    debugPrint('Uncaught error: $error\n$stack');
+    return true;
+  };
+
   // Avoid network font fetches in web preview sandboxes.
   if (kIsWeb) {
     GoogleFonts.config.allowRuntimeFetching = false;
   }
 
-  final prefs = await SharedPreferences.getInstance();
+  final prefs = await bootstrapSharedPreferences();
+  setSharedPreferencesCache(prefs);
 
   var firebaseReady = false;
   try {
@@ -29,6 +37,7 @@ Future<void> main() async {
   } catch (_) {
     // Firebase unavailable — app still runs on local mock data.
   }
+  setFirebaseReadyCache(firebaseReady);
 
   runApp(
     ProviderScope(

@@ -51,9 +51,18 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   Future<void> _finish() async {
-    await ref.read(onboardingControllerProvider).complete();
     if (!mounted) return;
-    ref.read(appRouterProvider).go('/');
+
+    final router = ref.read(appRouterProvider);
+    final controller = ref.read(onboardingControllerProvider);
+
+    try {
+      await controller.complete();
+      if (!mounted) return;
+      router.go('/');
+    } catch (error, stack) {
+      debugPrint('Onboarding finish failed: $error\n$stack');
+    }
   }
 
   void _next() {

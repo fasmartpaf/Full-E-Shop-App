@@ -48,19 +48,26 @@ Product _fromDoc(Map<String, dynamic> d) {
 /// Live products from Firestore (ordered). Emits the mock list first so the UI
 /// always has data, then the Firestore data once it arrives. On any error the
 /// stream falls back to the mock catalog.
-final catalogStreamProvider = StreamProvider<List<Product>>((ref) {
+final catalogStreamProvider = StreamProvider<List<Product>>((ref) async* {
   if (!ref.watch(firebaseReadyProvider)) {
-    return Stream<List<Product>>.value(MockCatalog.products);
+    yield MockCatalog.products;
+    return;
   }
-  return FirebaseFirestore.instance
-      .collection('products')
-      .orderBy('sortOrder')
-      .snapshots()
-      .map((snap) => snap.docs.isEmpty
+
+  yield MockCatalog.products;
+
+  try {
+    await for (final snap in FirebaseFirestore.instance
+        .collection('products')
+        .orderBy('sortOrder')
+        .snapshots()) {
+      yield snap.docs.isEmpty
           ? MockCatalog.products
-          : snap.docs.map((doc) => _fromDoc(doc.data())).toList())
-      .handleError((_) {})
-      .map((list) => list); // keep type as List<Product>
+          : snap.docs.map((doc) => _fromDoc(doc.data())).toList();
+    }
+  } catch (_) {
+    yield MockCatalog.products;
+  }
 });
 
 /// The single source of truth the rest of the app reads. Always returns a list:

@@ -34,11 +34,19 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   }
 
   Future<void> _navigateNext() async {
+    if (!mounted) return;
+
+    final router = ref.read(appRouterProvider);
+    final onboardingDone = ref.read(onboardingCompleteProvider);
+
     await Future<void>.delayed(const Duration(milliseconds: 2200));
     if (!mounted) return;
 
-    final onboardingDone = ref.read(onboardingCompleteProvider);
-    ref.read(appRouterProvider).go(onboardingDone ? '/' : '/onboarding');
+    try {
+      router.go(onboardingDone ? '/' : '/onboarding');
+    } catch (error, stack) {
+      debugPrint('Splash navigation failed: $error\n$stack');
+    }
   }
 
   @override
