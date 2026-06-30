@@ -7,8 +7,10 @@ import '../features/cart/cart_screen.dart';
 import '../features/category/category_screen.dart';
 import '../features/checkout/checkout_screen.dart';
 import '../features/home/home_screen.dart';
+import '../features/onboarding/onboarding_screen.dart';
 import '../features/product/product_detail_screen.dart';
 import '../features/search/search_screen.dart';
+import '../features/splash/splash_screen.dart';
 import '../features/wishlist/wishlist_screen.dart';
 import '../features/shell/scaffold_with_nav.dart';
 import '../features/orders/order_detail_screen.dart';
@@ -26,8 +28,18 @@ final _shellKey = GlobalKey<NavigatorState>();
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     navigatorKey: _rootKey,
-    initialLocation: '/',
+    initialLocation: '/splash',
     routes: [
+      GoRoute(
+        path: '/splash',
+        name: 'splash',
+        builder: (_, __) => const SplashScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding',
+        name: 'onboarding',
+        builder: (_, __) => const OnboardingScreen(),
+      ),
       ShellRoute(
         navigatorKey: _shellKey,
         builder: (context, state, child) => ScaffoldWithNav(child: child),

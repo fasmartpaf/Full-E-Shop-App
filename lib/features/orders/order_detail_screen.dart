@@ -49,6 +49,7 @@ class OrderDetailScreen extends ConsumerWidget {
                                 child: ProductImage(
                                     icon: item.product.icon,
                                     tintIndex: item.product.tintIndex,
+                                    imageUrl: item.product.imageUrl,
                                     iconSize: 24,
                                     radius: 12),
                               ),

@@ -12,7 +12,7 @@ class FlutterGoApp extends ConsumerWidget {
     final router = ref.watch(appRouterProvider);
 
     return MaterialApp.router(
-      title: 'Testing App Brief',
+      title: 'Ara Store',
       theme: AppTheme.light(),
       routerConfig: router,
     );

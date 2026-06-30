@@ -468,6 +468,7 @@ class _CompactProductCard extends StatelessWidget {
                     ProductImage(
                       icon: product.icon,
                       tintIndex: product.tintIndex,
+                      imageUrl: product.imageUrl,
                       radius: AppTheme.radius,
                       iconSize: 44,
                     ),

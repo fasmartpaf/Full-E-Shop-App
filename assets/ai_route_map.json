@@ -1,0 +1,112 @@
+{
+  "routes": [
+    {
+      "path": "/splash",
+      "previewPath": "/splash",
+      "name": "splash",
+      "filePath": "lib/features/splash/splash_screen.dart"
+    },
+    {
+      "path": "/onboarding",
+      "previewPath": "/onboarding",
+      "name": "onboarding",
+      "filePath": "lib/features/onboarding/onboarding_screen.dart"
+    },
+    {
+      "path": "/",
+      "previewPath": "/",
+      "name": "home",
+      "filePath": "lib/features/home/home_screen.dart"
+    },
+    {
+      "path": "/search",
+      "previewPath": "/search",
+      "name": "search",
+      "filePath": "lib/features/search/search_screen.dart"
+    },
+    {
+      "path": "/wishlist",
+      "previewPath": "/wishlist",
+      "name": "wishlist",
+      "filePath": "lib/features/wishlist/wishlist_screen.dart"
+    },
+    {
+      "path": "/cart",
+      "previewPath": "/cart",
+      "name": "cart",
+      "filePath": "lib/features/cart/cart_screen.dart"
+    },
+    {
+      "path": "/profile",
+      "previewPath": "/profile",
+      "name": "profile",
+      "filePath": "lib/features/profile/profile_screen.dart"
+    },
+    {
+      "path": "/login",
+      "previewPath": "/login",
+      "name": "login",
+      "filePath": "lib/features/auth/auth_screen.dart"
+    },
+    {
+      "path": "/product/:id",
+      "previewPath": "/product/p1",
+      "name": "product-detail",
+      "filePath": "lib/features/product/product_detail_screen.dart"
+    },
+    {
+      "path": "/category/:id",
+      "previewPath": "/category/tech",
+      "name": "category",
+      "filePath": "lib/features/category/category_screen.dart"
+    },
+    {
+      "path": "/checkout",
+      "previewPath": "/checkout",
+      "name": "checkout",
+      "filePath": "lib/features/checkout/checkout_screen.dart"
+    },
+    {
+      "path": "/order-confirmation",
+      "previewPath": "/order-confirmation",
+      "name": "order-confirmation",
+      "filePath": "lib/features/orders/order_confirmation_screen.dart"
+    },
+    {
+      "path": "/orders",
+      "previewPath": "/orders",
+      "name": "orders",
+      "filePath": "lib/features/orders/orders_screen.dart"
+    },
+    {
+      "path": "/order/:id",
+      "previewPath": "/order/ORD-001",
+      "name": "order-detail",
+      "filePath": "lib/features/orders/order_detail_screen.dart"
+    },
+    {
+      "path": "/addresses",
+      "previewPath": "/addresses",
+      "name": "addresses",
+      "filePath": "lib/features/addresses/addresses_screen.dart"
+    },
+    {
+      "path": "/payment-methods",
+      "previewPath": "/payment-methods",
+      "name": "payment-methods",
+      "filePath": "lib/features/payment/payment_methods_screen.dart"
+    },
+    {
+      "path": "/notifications",
+      "previewPath": "/notifications",
+      "name": "notifications",
+      "filePath": "lib/features/notifications/notifications_screen.dart"
+    },
+    {
+      "path": "/help",
+      "previewPath": "/help",
+      "name": "help",
+      "filePath": "lib/features/help/help_screen.dart"
+    }
+  ]
+}

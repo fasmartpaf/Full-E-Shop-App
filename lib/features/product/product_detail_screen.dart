@@ -80,6 +80,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                 child: ProductImage(
                   icon: product.icon,
                   tintIndex: product.tintIndex,
+                  imageUrl: product.imageUrl,
                   iconSize: 96,
                   radius: 24,
                 ),

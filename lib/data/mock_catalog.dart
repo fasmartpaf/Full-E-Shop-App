@@ -34,6 +34,8 @@ class MockCatalog {
           'or deep in focus.',
       tintIndex: 0,
       icon: Icons.headphones_rounded,
+      imageUrl:
+          'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&h=600&fit=crop',
       colors: ['Graphite', 'Sand', 'Sky'],
       badge: 'Best seller',
     ),
@@ -50,6 +52,8 @@ class MockCatalog {
           'Tracks heart rate, sleep, and recovery with on-device insights.',
       tintIndex: 5,
       icon: Icons.watch_rounded,
+      imageUrl:
+          'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&h=600&fit=crop',
       colors: ['Midnight', 'Silver'],
       badge: 'New',
     ),
@@ -67,6 +71,8 @@ class MockCatalog {
           'playback and a strap that clips anywhere.',
       tintIndex: 2,
       icon: Icons.speaker_rounded,
+      imageUrl:
+          'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=600&h=600&fit=crop',
       colors: ['Coral', 'Forest', 'Black'],
     ),
     Product(
@@ -83,6 +89,8 @@ class MockCatalog {
           'upholstery. Built to be the quiet centrepiece of a room.',
       tintIndex: 3,
       icon: Icons.chair_alt_rounded,
+      imageUrl:
+          'https://images.unsplash.com/photo-1567538096623-4fca0c8d0894?w=600&h=600&fit=crop',
       colors: ['Oat', 'Charcoal'],
       badge: 'Best seller',
     ),
@@ -99,6 +107,8 @@ class MockCatalog {
           'linen shade. Soft, even light for evenings in.',
       tintIndex: 4,
       icon: Icons.light_rounded,
+      imageUrl:
+          'https://images.unsplash.com/photo-1507473885765-e6ed257f7827?w=600&h=600&fit=crop',
       colors: ['Clay', 'Cream'],
     ),
     Product(
@@ -115,6 +125,8 @@ class MockCatalog {
           'safe, with a comfortable curved handle.',
       tintIndex: 1,
       icon: Icons.coffee_rounded,
+      imageUrl:
+          'https://images.unsplash.com/photo-1514228742589-6d155d81ec9c?w=600&h=600&fit=crop',
     ),
     Product(
       id: 'p7',
@@ -129,6 +141,8 @@ class MockCatalog {
           'that keeps its shape wash after wash.',
       tintIndex: 1,
       icon: Icons.checkroom_rounded,
+      imageUrl:
+          'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&h=600&fit=crop',
       colors: ['Bone', 'Olive', 'Navy', 'Black'],
       sizes: ['XS', 'S', 'M', 'L', 'XL'],
     ),
@@ -146,6 +160,8 @@ class MockCatalog {
           'Breathable knit upper with a locked-in heel.',
       tintIndex: 5,
       icon: Icons.directions_run_rounded,
+      imageUrl:
+          'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&h=600&fit=crop',
       colors: ['Slate', 'Sand'],
       sizes: ['7', '8', '9', '10', '11', '12'],
       badge: 'New',
@@ -163,6 +179,8 @@ class MockCatalog {
           'and hydrates without stickiness. Vegan and cruelty-free.',
       tintIndex: 4,
       icon: Icons.spa_rounded,
+      imageUrl:
+          'https://images.unsplash.com/photo-1620916560428-224d77080c63?w=600&h=600&fit=crop',
       badge: 'Best seller',
     ),
     Product(
@@ -179,6 +197,8 @@ class MockCatalog {
           'plump finish. Fragrance-free and non-comedogenic.',
       tintIndex: 0,
       icon: Icons.water_drop_rounded,
+      imageUrl:
+          'https://images.unsplash.com/photo-1556228578-0d54d0de4838?w=600&h=600&fit=crop',
     ),
     Product(
       id: 'p11',
@@ -193,6 +213,8 @@ class MockCatalog {
           'alignment guides. Comes with a carry strap.',
       tintIndex: 2,
       icon: Icons.self_improvement_rounded,
+      imageUrl:
+          'https://images.unsplash.com/photo-1601925260368-ae2f83cf8d50?w=600&h=600&fit=crop',
       colors: ['Sage', 'Plum', 'Charcoal'],
     ),
     Product(
@@ -209,6 +231,8 @@ class MockCatalog {
           'dumbbells and stores in a single footprint.',
       tintIndex: 3,
       icon: Icons.fitness_center_rounded,
+      imageUrl:
+          'https://images.unsplash.com/photo-1583454110551-21f2e2b8db6a?w=600&h=600&fit=crop',
       badge: 'Best seller',
     ),
   ];

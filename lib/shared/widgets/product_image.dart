@@ -1,17 +1,66 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../theme/app_theme.dart';
 
-/// Branded gradient tile that stands in for a product photo.
-/// Swap for a real image (Image.network / cached) once a media provider
-/// or backend with image URLs is connected.
+/// Product photo with network image support and a branded gradient fallback.
 class ProductImage extends StatelessWidget {
   const ProductImage({
     super.key,
     required this.icon,
     required this.tintIndex,
+    this.imageUrl,
     this.radius = AppTheme.radius,
     this.iconSize = 56,
+  });
+
+  final IconData icon;
+  final int tintIndex;
+  final String? imageUrl;
+  final double radius;
+  final double iconSize;
+
+  @override
+  Widget build(BuildContext context) {
+    if (imageUrl != null && imageUrl!.isNotEmpty) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(radius),
+        child: CachedNetworkImage(
+          imageUrl: imageUrl!,
+          fit: BoxFit.cover,
+          width: double.infinity,
+          height: double.infinity,
+          placeholder: (_, __) => _Placeholder(
+            icon: icon,
+            tintIndex: tintIndex,
+            radius: radius,
+            iconSize: iconSize,
+          ),
+          errorWidget: (_, __, ___) => _Placeholder(
+            icon: icon,
+            tintIndex: tintIndex,
+            radius: radius,
+            iconSize: iconSize,
+          ),
+        ),
+      );
+    }
+
+    return _Placeholder(
+      icon: icon,
+      tintIndex: tintIndex,
+      radius: radius,
+      iconSize: iconSize,
+    );
+  }
+}
+
+class _Placeholder extends StatelessWidget {
+  const _Placeholder({
+    required this.icon,
+    required this.tintIndex,
+    required this.radius,
+    required this.iconSize,
   });
 
   final IconData icon;

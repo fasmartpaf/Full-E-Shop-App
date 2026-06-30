@@ -37,6 +37,7 @@ Product _fromDoc(Map<String, dynamic> d) {
     description: d['description'] as String? ?? '',
     tintIndex: (d['tintIndex'] as num?)?.toInt() ?? 0,
     icon: kProductIcons[d['iconKey']] ?? Icons.shopping_bag_rounded,
+    imageUrl: d['imageUrl'] as String?,
     colors: (d['colors'] as List<dynamic>? ?? []).cast<String>(),
     sizes: (d['sizes'] as List<dynamic>? ?? []).cast<String>(),
     badge: d['badge'] as String?,

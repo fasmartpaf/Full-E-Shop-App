@@ -85,17 +85,14 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 56,
-                  height: 56,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [AppColors.brand, Color(0xFF6C5CE7)],
-                    ),
-                    borderRadius: BorderRadius.circular(16),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    width: 56,
+                    height: 56,
+                    fit: BoxFit.cover,
                   ),
-                  child: const Icon(Icons.storefront_rounded,
-                      color: Colors.white, size: 28),
                 ),
                 const SizedBox(height: 20),
                 Text(_isRegister ? 'Create your account' : 'Welcome back',

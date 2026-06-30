@@ -36,6 +36,7 @@ class ProductCard extends ConsumerWidget {
                   ProductImage(
                     icon: product.icon,
                     tintIndex: product.tintIndex,
+                    imageUrl: product.imageUrl,
                     radius: AppTheme.radius,
                   ),
                   if (product.onSale || product.badge != null)
@@ -142,41 +143,33 @@ class ProductCard extends ConsumerWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: Row(
-                          children: [
-                            Flexible(
-                              child: Text(
-                                money(product.price),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ),
-                            if (product.onSale) ...[
-                              const SizedBox(width: 4),
-                              Flexible(
-                                child: Text(
-                                  money(product.compareAt!),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontSize: 11,
-                                    color: AppColors.inkMuted,
-                                    decoration: TextDecoration.lineThrough,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ],
+                        child: Text(
+                          money(product.price),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w800,
+                            fontSize: 13,
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 6),
+                      if (product.onSale) ...[
+                        const SizedBox(width: 4),
+                        Text(
+                          money(product.compareAt!),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 10,
+                            color: AppColors.inkMuted,
+                            decoration: TextDecoration.lineThrough,
+                          ),
+                        ),
+                      ],
+                      const SizedBox(width: 4),
                       SizedBox(
-                        width: 32,
-                        height: 32,
+                        width: 30,
+                        height: 30,
                         child: FilledButton(
                           onPressed: () {
                             ref.read(cartProvider.notifier).add(product);
@@ -191,7 +184,7 @@ class ProductCard extends ConsumerWidget {
                             backgroundColor: AppColors.brand,
                             minimumSize: Size.zero,
                           ),
-                          child: const Icon(Icons.add_rounded, size: 18),
+                          child: const Icon(Icons.add_rounded, size: 16),
                         ),
                       ),
                     ],

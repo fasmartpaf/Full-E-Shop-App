@@ -27,6 +27,7 @@ class Product {
     required this.description,
     required this.tintIndex,
     required this.icon,
+    this.imageUrl,
     this.colors = const [],
     this.sizes = const [],
     this.badge,
@@ -44,6 +45,7 @@ class Product {
   final String description;
   final int tintIndex;
   final IconData icon;
+  final String? imageUrl;
   final List<String> colors;
   final List<String> sizes;
   final String? badge; // "New", "Best seller", etc.

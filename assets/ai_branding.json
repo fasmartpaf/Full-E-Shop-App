@@ -1,0 +1,22 @@
+{
+  "appName": "Ara Store",
+  "tagline": "Curated products, delivered fast",
+  "logoAsset": "assets/images/logo.png",
+  "colors": {
+    "brand": "#4C3AE3",
+    "brandDark": "#3A2BBF",
+    "accent": "#FF6B5B",
+    "success": "#12B886",
+    "canvas": "#F6F7FB",
+    "surface": "#FFFFFF",
+    "ink": "#14151A",
+    "inkMuted": "#6B7080"
+  },
+  "typography": {
+    "fontFamily": "Manrope"
+  },
+  "theme": {
+    "light": "AppTheme.light",
+    "dark": null
+  }
+}
